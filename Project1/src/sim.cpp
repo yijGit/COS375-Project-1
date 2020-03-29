@@ -4,6 +4,7 @@
 #include <cstdio>
 #include "MemoryStore.h"
 #include "RegisterInfo.h"
+#include "EndianHelpers.h"
 
 using namespace std;
 
@@ -11,8 +12,9 @@ enum boolean {FALSE, TRUE};
 
 int main(int argc, char *argv[])
 {
-  FILE *pfile;
+  FILE *pFile;
   uint32_t word;
+  long lSize;
   // Create	a	memory	store	called	myMem
   MemoryStore *myMem = createMemoryStore();
   // Initialize	registers	to	have	value	0
@@ -42,11 +44,13 @@ int main(int argc, char *argv[])
   pFile = fopen(argv[1], "rb");
   if (pFile==NULL) {fputs("File error", stderr); exit(1);}
   fseek(pFile, 0, SEEK_END);
-  lSize = ftell(pfile);
+  lSize = ftell(pFile);
   rewind(pFile);
   cout << lSize << "\n";
-  fread(word, 1, 4, pFile);
-  cout << word << "\n";
+  //fread(word, 4, 1, pFile);
+  fread(reinterpret_cast<char *>(&word), sizeof(word), 1, pFile);
+  word = ConvertWordToBigEndian(word);
+  cout << hex << setfill('0') << setw(8) << word << endl;
 
   // Point	the	program	counter	to	the	first	instruction
   while (TRUE)
