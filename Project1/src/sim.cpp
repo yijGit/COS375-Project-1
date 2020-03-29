@@ -16,11 +16,26 @@ int main(int argc, char *argv[])
   // Initialize	registers	to	have	value	0
   RegisterInfo reg;
   reg.at = 0;
-  reg.v = {0};
-  reg.a = {0};
-  reg.t = {0};
-  reg.s = {0};
-  reg.k = {0};
+  for (int i = 0; i < V_REG_SIZE; i++)
+  {
+    reg.v[i] = 0;
+  }
+  for (int i = 0; i < A_REG_SIZE; i++)
+  {
+    reg.a[i] = 0;
+  }
+  for (int i = 0; i < T_REG_SIZE; i++)
+  {
+    reg.t[i] = 0;
+  }
+  for (int i = 0; i < S_REG_SIZE; i++)
+  {
+    reg.s[i] = 0;
+  }
+  for (int i = 0; i < K_REG_SIZE; i++)
+  {
+    reg.k[i] = 0;
+  }
   reg.gp = 0;
   reg.sp = 0;
   reg.fp = 0;
