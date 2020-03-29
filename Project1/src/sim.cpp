@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
   MemoryStore *myMem = createMemoryStore();
   // Initialize	registers	to	have	value	0
   RegisterInfo reg;
-  reg.at = 0;
+  reg.at = 0, reg.gp = 0, reg.sp = 0, reg.fp = 0, reg.ra = 0;
   for (int i = 0; i < V_REG_SIZE; i++)
   {
     reg.v[i] = 0;
@@ -36,10 +36,7 @@ int main(int argc, char *argv[])
   {
     reg.k[i] = 0;
   }
-  reg.gp = 0;
-  reg.sp = 0;
-  reg.fp = 0;
-  reg.ra = 0;
+
     // Read	bytes	of	binary	file passed	as	parameter into appropriate	memory	locations
 
   // Point	the	program	counter	to	the	first	instruction
