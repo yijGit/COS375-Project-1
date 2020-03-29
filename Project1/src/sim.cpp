@@ -1,9 +1,13 @@
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
+#include <cstdio>
 #include "MemoryStore.h"
 #include "RegisterInfo.h"
 
 using namespace std;
+
+enum boolean {FALSE, TRUE};
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +23,7 @@ int main(int argc, char *argv[])
     // Fetch	current	instruction	from	memory@PC
     // Determine	the	instruction	type
     // Get	the	operands
-    switch (instruction	type)
+    /*switch (instruction	type)
     {
       case 0xfeedfeed:
         // RegisterInfo	reg;
@@ -35,9 +39,9 @@ int main(int argc, char *argv[])
       default:
         fprintf(stderr, "Illegal	operation...");
         exit(127);
-    }
+    }*/
   }
-  
+
   dumpRegisterState(reg);
   dumpMemoryState(myMem);
 
