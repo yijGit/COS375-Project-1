@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int main(argc, argv)
+int main(int argc, char *argv[])
 {
   // Create	a	memory	store	called	myMem
   MemoryStore *myMem = createMemoryStore();
@@ -33,7 +33,7 @@ int main(argc, argv)
         break;
       // ...
       default:
-        fprintf(stderr, ”Illegal	operation...”);
+        fprintf(stderr, "Illegal	operation...");
         exit(127);
     }
   }
