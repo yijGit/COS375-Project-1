@@ -48,9 +48,13 @@ int main(int argc, char *argv[])
   rewind(pFile);
   cout << lSize << "\n";
   //fread(word, 4, 1, pFile);
-  fread(reinterpret_cast<char *>(&word), sizeof(word), 1, pFile);
-  word = ConvertWordToBigEndian(word);
-  cout << hex << setfill('0') << setw(8) << word << endl;
+  for (long i; i < lSize; i++)
+  {
+    fread(reinterpret_cast<char *>(&word), sizeof(word), 1, pFile);
+    word = ConvertWordToBigEndian(word);
+    myMem->setMemValue((uint32_t) i, word, BYTE_SIZE);
+    cout << hex << setfill('0') << setw(8) << word << endl;
+  }
 
   // Point	the	program	counter	to	the	first	instruction
   while (TRUE)
