@@ -11,6 +11,8 @@ enum boolean {FALSE, TRUE};
 
 int main(int argc, char *argv[])
 {
+  FILE *pfile;
+  uint32_t word;
   // Create	a	memory	store	called	myMem
   MemoryStore *myMem = createMemoryStore();
   // Initialize	registers	to	have	value	0
@@ -36,8 +38,15 @@ int main(int argc, char *argv[])
   {
     reg.k[i] = 0;
   }
-
-    // Read	bytes	of	binary	file passed	as	parameter into appropriate	memory	locations
+  // Read	bytes	of	binary	file passed	as	parameter into appropriate	memory	locations
+  pFile = fopen(argv[1], "rb");
+  if (pFile==NULL) {fputs("File error", stderr); exit(1);}
+  fseek(pFile, 0, SEEK_END);
+  lSize = ftell(pfile);
+  rewind(pFile);
+  cout << lSize << "\n";
+  fread(word, 1, 4, pFile);
+  cout << word << "\n";
 
   // Point	the	program	counter	to	the	first	instruction
   while (TRUE)
