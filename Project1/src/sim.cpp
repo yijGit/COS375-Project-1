@@ -15,7 +15,17 @@ int main(int argc, char *argv[])
   MemoryStore *myMem = createMemoryStore();
   // Initialize	registers	to	have	value	0
   RegisterInfo reg;
-  // Read	bytes	of	binary	file passed	as	parameter into appropriate	memory	locations
+  reg.at = 0;
+  reg.v = {0};
+  reg.a = {0};
+  reg.t = {0};
+  reg.s = {0};
+  reg.k = {0};
+  reg.gp = 0;
+  reg.sp = 0;
+  reg.fp = 0;
+  reg.ra = 0;
+    // Read	bytes	of	binary	file passed	as	parameter into appropriate	memory	locations
 
   // Point	the	program	counter	to	the	first	instruction
   while (TRUE)
@@ -43,8 +53,6 @@ int main(int argc, char *argv[])
     break;
   }
 
-
-  cout << "Hello, world!";
   dumpRegisterState(reg);
   dumpMemoryState(myMem);
 
