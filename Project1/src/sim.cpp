@@ -40,8 +40,11 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Illegal	operation...");
         exit(127);
     }*/
+    break;
   }
 
+
+  cout << "Hello, world!";
   dumpRegisterState(reg);
   dumpMemoryState(myMem);
 
