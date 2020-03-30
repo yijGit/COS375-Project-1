@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
   while (TRUE)
   {
     // Fetch	current	instruction	from	memory@PC
-    instruction = myMem->getMemValue(0x10, value, WORD_SIZE);
+    myMem->getMemValue(pc, instruction, WORD_SIZE);
     // Determine	the	instruction	type
     if (instruction == 0xfeedfeed)
       {instr_type = HALT;}
@@ -81,18 +81,19 @@ int main(int argc, char *argv[])
         // Fill	reg	with	the	current	contents	of	the	registers
         dumpRegisterState(reg);
         dumpMemoryState(myMem);
+        cout << "HALT" << endl;
         return 0;
       case OTHER:
         // Perform	operation	and	update	destination
         // register/memory/PC
         cout << "other" << endl;
+        pc += 4;
         break;
       // ...
       default:
         fprintf(stderr, "Illegal	operation...");
         exit(127);
     }
-    break;
   }
 
   dumpRegisterState(reg);
