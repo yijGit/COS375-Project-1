@@ -10,11 +10,16 @@ using namespace std;
 
 enum boolean {FALSE, TRUE};
 
+// add instruction types as we go along
+enum ins_t {HALT, OTHER};
+
 int main(int argc, char *argv[])
 {
   FILE *pFile;
-  uint32_t word;
+  uint32_t word, instruction;
   long lSize;
+  uint32_t pc;
+  ins_t instr_type;
   // Create	a	memory	store	called	myMem
   MemoryStore *myMem = createMemoryStore();
   // Initialize	registers	to	have	value	0
@@ -57,28 +62,36 @@ int main(int argc, char *argv[])
   }
 
   // Point	the	program	counter	to	the	first	instruction
+  pc = 0;
+
   while (TRUE)
   {
     // Fetch	current	instruction	from	memory@PC
+    instruction = myMem->getMemValue(0x10, value, WORD_SIZE);
     // Determine	the	instruction	type
+    if (instruction == 0xfeedfeed)
+      {instr_type = HALT;}
+    else
+      {instr_type = OTHER;}
     // Get	the	operands
-    /*switch (instruction	type)
+    switch (instr_type)
     {
-      case 0xfeedfeed:
+      case HALT:
         // RegisterInfo	reg;
         // Fill	reg	with	the	current	contents	of	the	registers
         dumpRegisterState(reg);
         dumpMemoryState(myMem);
         return 0;
-      case INSTR1:
+      case OTHER:
         // Perform	operation	and	update	destination
         // register/memory/PC
+        cout << "other" << endl;
         break;
       // ...
       default:
         fprintf(stderr, "Illegal	operation...");
         exit(127);
-    }*/
+    }
     break;
   }
 
