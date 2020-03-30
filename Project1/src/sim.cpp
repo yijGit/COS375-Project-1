@@ -13,10 +13,15 @@ enum boolean {FALSE, TRUE};
 // add instruction types as we go along
 enum ins_t {HALT, OTHER};
 
+uint32_t get_opcode(uint32_t instruction)
+{
+  return instruction >> 26;
+}
+
 int main(int argc, char *argv[])
 {
   FILE *pFile;
-  uint32_t word, instruction;
+  uint32_t word, instruction, op_code;
   long lSize;
   uint32_t pc;
   ins_t instr_type;
@@ -72,7 +77,10 @@ int main(int argc, char *argv[])
     if (instruction == 0xfeedfeed)
       {instr_type = HALT;}
     else
-      {instr_type = OTHER;}
+      {
+        instr_type = OTHER;
+        op_code = get_opcode(instruction);
+      }
     // Get	the	operands
     switch (instr_type)
     {
@@ -86,8 +94,13 @@ int main(int argc, char *argv[])
       case OTHER:
         // Perform	operation	and	update	destination
         // register/memory/PC
-        cout << "other" << endl;
+
         pc += 4;
+        if (op_code == 13) {cout << "ori" << endl;}
+        else if (op_code == 15) {cout << "lui" << endl;}
+        else if (op_code == 35) {cout << "lw" << endl;}
+        else if (op_code == 43) {cout << "sw" << endl;}
+        else cout << "other" << endl;
         break;
       // ...
       default:
