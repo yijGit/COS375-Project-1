@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
           cout << endl;
         }
         else if (op_code == 0x23) {
-          I_format fields = get_I_format(instructoin);
+          I_format fields = get_I_format(instruction);
           cout << "lw" << endl;
           cout << fields.rs << endl;
           cout << fields.rt << endl;
