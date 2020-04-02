@@ -68,7 +68,7 @@ J_format get_J_format(uint32_t instruction)
     return fields;
 }
 
-void transfer_registers(uint32_t reg_arr, RegisterInfo reg)
+void transfer_registers(uint32_t reg_arr[], RegisterInfo &reg)
 {
   reg.at = reg_arr[1];
   reg.gp = reg_arr[28];
@@ -186,6 +186,7 @@ int main(int argc, char *argv[])
         if (op_code == 0x8)
         {
           reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + i_fields.imm; // Note: still need to add sign extension
+          cout << "addi" << endl;
         }
         cout << "I" << endl;
         break;
