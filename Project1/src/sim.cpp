@@ -10,12 +10,45 @@ using namespace std;
 
 enum boolean {FALSE, TRUE};
 
+struct R_format
+{
+  uint32_t rs, rt, rd, shamt, funct;
+};
+
 // add instruction types as we go along
 enum ins_t {HALT, OTHER};
 
 uint32_t get_opcode(uint32_t instruction)
 {
   return instruction >> 26;
+}
+
+uint32_t get_R_format(uint32_t instruction)
+{
+  struct R_format fields;
+  uint32_t mask21 = 31 << 21; // mask for bits 21-25
+  uint32_t mask16 = 31 << 16; // mask for bits 16-20
+  uint32_t mask11 = 31 << 11; // mask for bits 11-15
+  uint32_t mask6 = 31 << 6; // mask for bits 6-10
+  uint32_t mask0 = 63; // mask for bits 0-5
+  fields.rs = (instruction & mask21) >> 21;
+  fields.rt = (instruction & mask16) >> 16;
+  fields.rd = (instruction & mask11) >> 11;
+  fields.shamt = (instruction & mask6) >> 6;
+  fields.funct = instruction & mask0;
+  return fields;
+
+}
+
+uint32_t get_rd(uint32_t instruction)
+{
+  uint32_t mask = 31 << 16; // mask for values 16-20
+  return (instruction & mask) >> 16;
+}
+
+uint32_t get_rd(uint32_t instruction)
+{
+  uint32_t mask =
 }
 
 int main(int argc, char *argv[])
@@ -96,12 +129,17 @@ int main(int argc, char *argv[])
         // register/memory/PC
 
         pc += 4;
-        if (op_code == 13) {cout << "ori" << endl;}
-        else if (op_code == 15) {cout << "lui" << endl;}
-        else if (op_code == 35) {cout << "lw" << endl;}
-        else if (op_code == 43) {cout << "sw" << endl;}
-        else cout << "other" << endl;
-        break;
+        if (op_code == 0) {
+          R_format fields = get_R_format(instruction);
+          cout << fields.rs << endl;
+          cout << fields.rt << endl;
+          cout << fields.rd << endl;
+          cout << fields.shamt << endl;
+          cout << fields.funct << endl;
+          cout << endl;
+          cout << endl;
+
+        }
       // ...
       default:
         fprintf(stderr, "Illegal	operation...");
