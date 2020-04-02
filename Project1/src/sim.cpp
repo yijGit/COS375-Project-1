@@ -15,6 +15,16 @@ struct R_format
   uint32_t rs, rt, rd, shamt, funct;
 };
 
+struct I_format
+{
+  uint32_t rs, rt, imm;
+};
+
+struct J_format
+{
+  uint32_t addr;
+};
+
 // add instruction types as we go along
 enum ins_t {HALT, OTHER};
 
@@ -37,8 +47,27 @@ R_format get_R_format(uint32_t instruction)
   fields.shamt = (instruction & mask6) >> 6;
   fields.funct = instruction & mask0;
   return fields;
-
 }
+
+I_format get_I_format(uint32_t instruction)
+{
+  struct I_format fields;
+  uint32_t mask21 = 31 << 21; // mask for bits 21-25
+  uint32_t mask16 = 31 << 16; // mask for bits 16-20
+  uint32_t mask0 = ((1 << 16) - 1); // mask for bits 0-15, equal to 2^16 - 1
+  fields.rs = (instruction & mask21) >> 21;
+  fields.rt = (instruction & mask16) >> 16;
+  fields.imm = instruction & mask0;
+  return fields;
+}
+
+J_format get_J_format(uint32_t instruction)
+{
+    struct J_format fields;
+    fields.addr = instruction & ((1 << 26) - 1); // extract bits 0-25
+    return fields;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -120,14 +149,21 @@ int main(int argc, char *argv[])
         pc += 4;
         if (op_code == 0) {
           R_format fields = get_R_format(instruction);
+          cout << "add" << endl;
           cout << fields.rs << endl;
           cout << fields.rt << endl;
           cout << fields.rd << endl;
           cout << fields.shamt << endl;
           cout << fields.funct << endl;
           cout << endl;
+        }
+        else if (op_code == 0x23) {
+          I_format fields = get_I_format(instructoin);
+          cout << "lw" << endl;
+          cout << fields.rs << endl;
+          cout << fields.rt << endl;
+          cout << fields.imm << endl;
           cout << endl;
-          
         }
         break;
       // ...
