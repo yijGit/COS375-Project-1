@@ -68,6 +68,38 @@ J_format get_J_format(uint32_t instruction)
     return fields;
 }
 
+void transfer_registers(uint32_t reg_arr, RegisterInfo reg)
+{
+  reg.at = reg_arr[1];
+  reg.gp = reg_arr[28];
+  reg.sp = reg_arr[29];
+  reg.fp = reg_arr[30];
+  reg.ra = reg_arr[31];
+
+  for (int i = 0; i < V_REG_SIZE; i++)
+  {
+    reg.v[i] = reg_arr[2 + i];
+  }
+  for (int i = 0; i < A_REG_SIZE; i++)
+  {
+    reg.a[i] = reg_arr[4 + i];
+  }
+  for (int i = 0; i < T_REG_SIZE - 2; i++)
+  {
+    reg.t[i] = reg_arr[8 + i];
+  }
+  reg.t[8] = reg_arr[24];
+  reg.t[9] = reg_arr[25];
+  for (int i = 0; i < S_REG_SIZE; i++)
+  {
+    reg.s[i] = reg_arr[16 + i];
+  }
+  for (int i = 0; i < K_REG_SIZE; i++)
+  {
+    reg.k[i] = reg_arr[26 + i];
+  }
+  return;
+}
 
 int main(int argc, char *argv[])
 {
@@ -85,27 +117,7 @@ int main(int argc, char *argv[])
   {
     reg_arr[i] = 0;
   }
-  /*reg.at = 0, reg.gp = 0, reg.sp = 0, reg.fp = 0, reg.ra = 0;
-  for (int i = 0; i < V_REG_SIZE; i++)
-  {
-    reg.v[i] = 0;
-  }
-  for (int i = 0; i < A_REG_SIZE; i++)
-  {
-    reg.a[i] = 0;
-  }
-  for (int i = 0; i < T_REG_SIZE; i++)
-  {
-    reg.t[i] = 0;
-  }
-  for (int i = 0; i < S_REG_SIZE; i++)
-  {
-    reg.s[i] = 0;
-  }
-  for (int i = 0; i < K_REG_SIZE; i++)
-  {
-    reg.k[i] = 0;
-  }*/
+
 
   // Read	bytes	of	binary	file passed	as	parameter into appropriate	memory	locations
   pFile = fopen(argv[1], "rb");
@@ -150,25 +162,26 @@ int main(int argc, char *argv[])
       case HALT:
         // RegisterInfo	reg;
         // Fill	reg	with	the	current	contents	of	the	registers
-        {
-	dumpRegisterState(reg);
+      {
+        transfer_registers(reg_arr, reg);
+	      dumpRegisterState(reg);
         dumpMemoryState(myMem);
         cout << "HALT" << endl;
         return 0;
-	}
+	    }
+
       case R_TYPE:
         // Perform	operation	and	update	destination
         // register/memory/PC
-
-        {
-	R_format r_fields = get_R_format(instruction);
+      {
+	      R_format r_fields = get_R_format(instruction);
         cout << "R" << endl;
         break;
-	}
-      case I_TYPE:
+	    }
 
-        {
-	I_format i_fields = get_I_format(instruction);
+      case I_TYPE:
+      {
+	      I_format i_fields = get_I_format(instruction);
         // addi
         if (op_code == 0x8)
         {
@@ -176,21 +189,20 @@ int main(int argc, char *argv[])
         }
         cout << "I" << endl;
         break;
-	}
+	    }
 
       case J_TYPE:
-
-        {
-	J_format j_fields = get_J_format(instruction);
+      {
+	      J_format j_fields = get_J_format(instruction);
         cout << "J" << endl;
         break;
-	}
-      // ...
+	    }
+
       default:
-        {
-	fprintf(stderr, "Illegal	operation...");
+      {
+	      fprintf(stderr, "Illegal	operation...");
         exit(127);
-	}
+	    }
     }
   }
 
