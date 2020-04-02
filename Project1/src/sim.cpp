@@ -26,7 +26,7 @@ struct J_format
 };
 
 // add instruction types as we go along
-enum ins_t {HALT, OTHER};
+enum ins_t {HALT, R_TYPE, I_TYPE, J_TYPE};
 
 uint32_t get_opcode(uint32_t instruction)
 {
@@ -79,8 +79,13 @@ int main(int argc, char *argv[])
   // Create	a	memory	store	called	myMem
   MemoryStore *myMem = createMemoryStore();
   // Initialize	registers	to	have	value	0
+  uint32_t reg_arr[32];
   RegisterInfo reg;
-  reg.at = 0, reg.gp = 0, reg.sp = 0, reg.fp = 0, reg.ra = 0;
+  for (int i = 0; i < 32; i++)
+  {
+    reg_arr[i] = 0;
+  }
+  /*reg.at = 0, reg.gp = 0, reg.sp = 0, reg.fp = 0, reg.ra = 0;
   for (int i = 0; i < V_REG_SIZE; i++)
   {
     reg.v[i] = 0;
@@ -100,7 +105,8 @@ int main(int argc, char *argv[])
   for (int i = 0; i < K_REG_SIZE; i++)
   {
     reg.k[i] = 0;
-  }
+  }*/
+
   // Read	bytes	of	binary	file passed	as	parameter into appropriate	memory	locations
   pFile = fopen(argv[1], "rb");
   if (pFile==NULL) {fputs("File error", stderr); exit(1);}
@@ -124,13 +130,19 @@ int main(int argc, char *argv[])
   {
     // Fetch	current	instruction	from	memory@PC
     myMem->getMemValue(pc, instruction, WORD_SIZE);
+    pc += 4;
     // Determine	the	instruction	type
     if (instruction == 0xfeedfeed)
       {instr_type = HALT;}
     else
       {
-        instr_type = OTHER;
         op_code = get_opcode(instruction);
+        if (op_code == 0x0)
+           { instr_type = R_TYPE;}
+        else if ((op_code == 0x2) || (op_code == 0x3))
+           { instr_type = J_TYPE;}
+        else
+           {instr_type = I_type;}
       }
     // Get	the	operands
     switch (instr_type)
@@ -142,29 +154,29 @@ int main(int argc, char *argv[])
         dumpMemoryState(myMem);
         cout << "HALT" << endl;
         return 0;
-      case OTHER:
+      case R_TYPE:
         // Perform	operation	and	update	destination
         // register/memory/PC
 
-        pc += 4;
-        if (op_code == 0) {
-          R_format fields = get_R_format(instruction);
-          cout << "add" << endl;
-          cout << fields.rs << endl;
-          cout << fields.rt << endl;
-          cout << fields.rd << endl;
-          cout << fields.shamt << endl;
-          cout << fields.funct << endl;
-          cout << endl;
+        R_format fields = get_R_format(instruction);
+        cout << "R" << endl;
+        break;
+
+      case I_TYPE:
+
+        I_format fields = get_I_format(instruction);
+        // addi
+        if (op_code == 0x8)
+        {
+          reg_arr[fields.rt] = reg_arr[fields.rs] + fields.imm; // Note: still need to add sign extension
         }
-        else if (op_code == 0x23) {
-          I_format fields = get_I_format(instruction);
-          cout << "lw" << endl;
-          cout << fields.rs << endl;
-          cout << fields.rt << endl;
-          cout << fields.imm << endl;
-          cout << endl;
-        }
+        cout << "I" << endl;
+        break;
+
+      case J_TYPE:
+
+        J_format fields = get_J_format(instruction);
+        cout << "J" << endl;
         break;
       // ...
       default:
