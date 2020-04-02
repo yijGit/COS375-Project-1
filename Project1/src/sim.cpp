@@ -23,7 +23,7 @@ uint32_t get_opcode(uint32_t instruction)
   return instruction >> 26;
 }
 
-uint32_t get_R_format(uint32_t instruction)
+R_format get_R_format(uint32_t instruction)
 {
   struct R_format fields;
   uint32_t mask21 = 31 << 21; // mask for bits 21-25
@@ -38,17 +38,6 @@ uint32_t get_R_format(uint32_t instruction)
   fields.funct = instruction & mask0;
   return fields;
 
-}
-
-uint32_t get_rd(uint32_t instruction)
-{
-  uint32_t mask = 31 << 16; // mask for values 16-20
-  return (instruction & mask) >> 16;
-}
-
-uint32_t get_rd(uint32_t instruction)
-{
-  uint32_t mask =
 }
 
 int main(int argc, char *argv[])
@@ -138,8 +127,9 @@ int main(int argc, char *argv[])
           cout << fields.funct << endl;
           cout << endl;
           cout << endl;
-
+          
         }
+        break;
       // ...
       default:
         fprintf(stderr, "Illegal	operation...");
