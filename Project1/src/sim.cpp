@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
         else if ((op_code == 0x2) || (op_code == 0x3))
            { instr_type = J_TYPE;}
         else
-           {instr_type = I_type;}
+           {instr_type = I_TYPE;}
       }
     // Get	the	operands
     switch (instr_type)
@@ -150,38 +150,47 @@ int main(int argc, char *argv[])
       case HALT:
         // RegisterInfo	reg;
         // Fill	reg	with	the	current	contents	of	the	registers
-        dumpRegisterState(reg);
+        {
+	dumpRegisterState(reg);
         dumpMemoryState(myMem);
         cout << "HALT" << endl;
         return 0;
+	}
       case R_TYPE:
         // Perform	operation	and	update	destination
         // register/memory/PC
 
-        R_format fields = get_R_format(instruction);
+        {
+	R_format r_fields = get_R_format(instruction);
         cout << "R" << endl;
         break;
-
+	}
       case I_TYPE:
 
-        I_format fields = get_I_format(instruction);
+        {
+	I_format i_fields = get_I_format(instruction);
         // addi
         if (op_code == 0x8)
         {
-          reg_arr[fields.rt] = reg_arr[fields.rs] + fields.imm; // Note: still need to add sign extension
+          reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + i_fields.imm; // Note: still need to add sign extension
         }
         cout << "I" << endl;
         break;
+	}
 
       case J_TYPE:
 
-        J_format fields = get_J_format(instruction);
+        {
+	J_format j_fields = get_J_format(instruction);
         cout << "J" << endl;
         break;
+	}
       // ...
       default:
-        fprintf(stderr, "Illegal	operation...");
+        {
+	fprintf(stderr, "Illegal	operation...");
         exit(127);
+	}
     }
   }
 
