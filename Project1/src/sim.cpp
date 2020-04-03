@@ -101,6 +101,14 @@ void transfer_registers(uint32_t reg_arr[], RegisterInfo &reg)
   return;
 }
 
+int32_t sign_extend_imm(uint32_t imm)
+{
+  if (imm & (1 << 15))
+  { return imm & 0xffff0000;}
+  else
+  { return imm; }
+}
+
 int main(int argc, char *argv[])
 {
   FILE *pFile;
@@ -185,7 +193,7 @@ int main(int argc, char *argv[])
         // addi
         if (op_code == 0x8)
         {
-          reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + i_fields.imm; // Note: still need to add sign extension
+          reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm);
           cout << "addi" << endl;
         }
         cout << "I" << endl;
