@@ -45,7 +45,7 @@ R_format get_R_format(uint32_t instruction)
   fields.rt = (instruction & mask16) >> 16;
   fields.rd = (instruction & mask11) >> 11;
   fields.shamt = (instruction & mask6) >> 6;
-  fields.funct = instruction & mask0;
+  fields.funct = (instruction & mask0);
   return fields;
 }
 
@@ -184,28 +184,28 @@ int main(int argc, char *argv[])
       {
 	      R_format r_fields = get_R_format(instruction);
         // add
-        if (r_fields.funct == "0x20")
+        if (r_fields.funct == 0x20)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] + reg_arr[r_fields.rt];
-          cout << "add" << end;
+          cout << "add" << endl;
         }
         // addu
-        if (r_fields.funct == "0x21")
+        if (r_fields.funct == 0x21)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] + reg_arr[r_fields.rt];
-          cout << "addu" << end;
+          cout << "addu" << endl;
         }
         // sub
-        if (r_fields.funct == "0x22")
+        if (r_fields.funct == 0x22)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] - reg_arr[r_fields.rt];
-          cout << "sub" << end;
+          cout << "sub" << endl;
         }
         // subu
-        if (r_fields.funct == "0x23")
+        if (r_fields.funct == 0x23)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] - reg_arr[r_fields.rt];
-          cout << "subu" << end;
+          cout << "subu" << endl;
         }
         break;
 	    }
