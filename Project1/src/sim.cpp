@@ -104,7 +104,7 @@ void transfer_registers(uint32_t reg_arr[], RegisterInfo &reg)
 int32_t sign_extend_imm(uint32_t imm)
 {
   if (imm & (1 << 15))
-  { return imm & 0xffff0000;}
+  { return imm | 0xffff0000;}
   else
   { return imm; }
 }
