@@ -183,6 +183,18 @@ int main(int argc, char *argv[])
         // register/memory/PC
       {
 	      R_format r_fields = get_R_format(instruction);
+        // sll
+        if (r_fields.funct == 0x0)
+        {
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] << r_fields.shamt;
+          cout << "sll" << endl;
+        }
+        // srl
+        if (r_fields.funct == 0x02)
+        {
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] >> r_fields.shamt;
+          cout << "srl" << endl;
+        }
         // add
         if (r_fields.funct == 0x20)
         {
@@ -207,6 +219,24 @@ int main(int argc, char *argv[])
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] - reg_arr[r_fields.rt];
           cout << "subu" << endl;
         }
+        // and
+        if (r_fields.funct == 0x24)
+        {
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] & reg_arr[r_fields.rt];
+          cout << "and" << endl;
+        }
+        // or
+        if (r_fields.funct == 0x25)
+        {
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] | reg_arr[r_fields.rt];
+          cout << "or" << endl;
+        }
+        // nor
+        if (r_fields.funct == 0x27)
+        {
+          reg_arr[r_fields.rd] = ~(reg_arr[r_fields.rs] | reg_arr[r_fields.rt]);
+          cout << "or" << endl;
+        }
         break;
 	    }
 
@@ -224,6 +254,18 @@ int main(int argc, char *argv[])
         {
           reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm);
           cout << "addiu" << endl;
+        }
+        // andi
+        if (op_code == 0xc)
+        {
+          reg_arr[i_fields.rt] = reg_arr[i_fields.rs] & i_fields.imm;
+          cout << "andi" << endl;
+        }
+        // ori
+        if (op_code == 0xd)
+        {
+          reg_arr[i_fields.rt] = reg_arr[i_fields.rs] | i_fields.imm;
+          cout << "ori" << endl;
         }
         break;
 	    }
