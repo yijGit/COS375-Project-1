@@ -235,7 +235,27 @@ int main(int argc, char *argv[])
         if (r_fields.funct == 0x27)
         {
           reg_arr[r_fields.rd] = ~(reg_arr[r_fields.rs] | reg_arr[r_fields.rt]);
-          cout << "or" << endl;
+          cout << "nor" << endl;
+        }
+        // jr
+        if (r_fields.funct == 0x08)
+        {
+          pc = reg_arr[r_fields.rs];
+          cout << "jr" << endl;
+        }
+        // slt
+        // NOTE: I am not sure I'm supposed to use sign_extend_imm here.
+        // $s and $t need to be signed, so that is why I put them through sign_extend_imm
+        if (r_fields.funct == 0x2a)
+        {
+          reg_arr[r_fields.rd] = (sign_extend_imm(reg_arr[r_fields.rs]) < sign_extend_imm(reg_arr[r_fields.rt])) ? 1 : 0;
+          cout << "slt" << endl;
+        }
+        // sltu
+        if (r_fields.funct == 0x2b)
+        {
+          reg_arr[r_fields.rd] = (reg_arr[r_fields.rs] < reg_arr[r_fields.rt]) ? 1 : 0;
+          cout << "sltu" << endl;
         }
         break;
 	    }
@@ -266,6 +286,62 @@ int main(int argc, char *argv[])
         {
           reg_arr[i_fields.rt] = reg_arr[i_fields.rs] | i_fields.imm;
           cout << "ori" << endl;
+        }
+        // lbu
+        // NOTE: Don't know if specifying MemEntrySize does anything or if I still need to do bitwise AND 0xff/0xffff to isolate a byte/halfword
+        // For now I assumed BYTE_SIZE and HALF_SIZE doesn't do anything and used bitwise AND (&) 
+        if (op_code == 0x24)
+        {
+          myMem->getMemValue(0xff & (reg_arr[i_fields.rs] + i_fields.imm), reg_arr[i_fields.rt], BYTE_SIZE);
+          cout << "lbu" << endl;
+        }
+        // lhu
+        if (op_code == 0x25)
+        {
+          myMem->getMemValue(0xffff & (reg_arr[i_fields.rs] + i_fields.imm), reg_arr[i_fields.rt], HALF_SIZE);
+          cout << "lhu" << endl;
+        }
+        // lui
+        if (op_code == 0xf)
+        {
+          reg_arr[i_fields.rt] = i_fields.imm << 16;
+          cout << "lui" << endl;
+        }
+        // lw
+        if (op_code == 0x23)
+        {
+          myMem->getMemValue(reg_arr[i_fields.rs] + i_fields.imm, reg_arr[i_fields.rt], WORD_SIZE);
+          cout << "lw" << endl;
+        }
+        // slti
+        if (op_code == 0xa)
+        {
+          reg_arr[i_fields.rt] = (reg_arr[i_fields.rs] < sign_extend_imm(i_fields.imm)) ? 1 : 0;
+          cout << "slti" << endl;
+        }
+        // sltiu
+        if (op_code == 0xb)
+        {
+          reg_arr[i_fields.rt] = (reg_arr[i_fields.rs] < i_fields.imm) ? 1 : 0;
+          cout << "sltiu" << endl;
+        }
+        // sb
+        if (op_code == 0x28)
+        {
+          myMem->setMemValue(reg_arr[i_fields.rs] + i_fields.imm, 0xff & reg_arr[i_fields.rt], BYTE_SIZE);
+          cout << "sb" << endl;
+        }
+        // sh
+        if (op_code == 0x29)
+        {
+          myMem->setMemValue(reg_arr[i_fields.rs] + i_fields.imm, 0xffff & reg_arr[i_fields.rt], HALF_SIZE);
+          cout << "sh" << endl;
+        }
+        // sw
+        if (op_code == 0x2b)
+        {
+          myMem->setMemValue(reg_arr[i_fields.rs] + i_fields.imm, reg_arr[i_fields.rt], WORD_SIZE);
+          cout << "sw" << endl;
         }
         break;
 	    }
