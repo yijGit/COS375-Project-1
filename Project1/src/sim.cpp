@@ -183,7 +183,30 @@ int main(int argc, char *argv[])
         // register/memory/PC
       {
 	      R_format r_fields = get_R_format(instruction);
-        cout << "R" << endl;
+        // add
+        if (r_fields.funct == "0x20")
+        {
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] + reg_arr[r_fields.rt];
+          cout << "add" << end;
+        }
+        // addu
+        if (r_fields.funct == "0x21")
+        {
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] + reg_arr[r_fields.rt];
+          cout << "addu" << end;
+        }
+        // sub
+        if (r_fields.funct == "0x22")
+        {
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] - reg_arr[r_fields.rt];
+          cout << "sub" << end;
+        }
+        // subu
+        if (r_fields.funct == "0x23")
+        {
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] - reg_arr[r_fields.rt];
+          cout << "subu" << end;
+        }
         break;
 	    }
 
@@ -196,14 +219,18 @@ int main(int argc, char *argv[])
           reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm);
           cout << "addi" << endl;
         }
-        cout << "I" << endl;
+        // addiu
+        if (op_code == 0x9)
+        {
+          reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm);
+          cout << "addiu" << endl;
+        }
         break;
 	    }
 
       case J_TYPE:
       {
 	      J_format j_fields = get_J_format(instruction);
-        cout << "J" << endl;
         break;
 	    }
 
