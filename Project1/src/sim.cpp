@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rt] << r_fields.shamt;
           cout << "sll" << endl;
-          
+
         }
         // srl
         if (r_fields.funct == 0x02)
@@ -365,7 +365,23 @@ int main(int argc, char *argv[])
         {
           if (reg_arr[i_fields.rs] != reg_arr[i_fields.rt])
           { pc += (sign_extend_imm(i_fields.imm) << 2);
-          cout << "beq" << endl;
+          cout << "bne" << endl;
+          }
+        }
+        // blez
+        if (op_code == 0x6)
+        {
+          if (reg_arr[i_fields.rs] <= 0)
+          { pc += (sign_extend_imm(i_fields.imm) << 2);
+          cout << "blez" << endl;
+          }
+        }
+        // bgtz
+        if (op_code == 0x7)
+        {
+          if (reg_arr[i_fields.rs] > 0)
+          { pc += (sign_extend_imm(i_fields.imm) << 2);
+          cout << "bgtz" << endl;
           }
         }
 
