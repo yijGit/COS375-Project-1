@@ -186,13 +186,14 @@ int main(int argc, char *argv[])
         // sll
         if (r_fields.funct == 0x0)
         {
-          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] << r_fields.shamt;
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rt] << r_fields.shamt;
           cout << "sll" << endl;
+          
         }
         // srl
         if (r_fields.funct == 0x02)
         {
-          reg_arr[r_fields.rd] = reg_arr[r_fields.rs] >> r_fields.shamt;
+          reg_arr[r_fields.rd] = reg_arr[r_fields.rt] >> r_fields.shamt;
           cout << "srl" << endl;
         }
         // add
