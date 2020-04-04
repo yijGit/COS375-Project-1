@@ -257,6 +257,14 @@ int main(int argc, char *argv[])
           reg_arr[r_fields.rd] = (reg_arr[r_fields.rs] < reg_arr[r_fields.rt]) ? 1 : 0;
           cout << "sltu" << endl;
         }
+
+        // jr
+        if (r_fields.funct == 0x8)
+        {
+          pc = reg_arr[r_fields.rs];
+          cout << "jr" << endl;
+        }
+
         break;
 	    }
 
@@ -289,7 +297,7 @@ int main(int argc, char *argv[])
         }
         // lbu
         // NOTE: Don't know if specifying MemEntrySize does anything or if I still need to do bitwise AND 0xff/0xffff to isolate a byte/halfword
-        // For now I assumed BYTE_SIZE and HALF_SIZE doesn't do anything and used bitwise AND (&) 
+        // For now I assumed BYTE_SIZE and HALF_SIZE doesn't do anything and used bitwise AND (&)
         if (op_code == 0x24)
         {
           myMem->getMemValue(0xff & (reg_arr[i_fields.rs] + i_fields.imm), reg_arr[i_fields.rt], BYTE_SIZE);
@@ -310,7 +318,7 @@ int main(int argc, char *argv[])
         // lw
         if (op_code == 0x23)
         {
-          myMem->getMemValue(reg_arr[i_fields.rs] + i_fields.imm, reg_arr[i_fields.rt], WORD_SIZE);
+          myMem->getMemValue(reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm), reg_arr[i_fields.rt], WORD_SIZE);
           cout << "lw" << endl;
         }
         // slti
@@ -340,15 +348,47 @@ int main(int argc, char *argv[])
         // sw
         if (op_code == 0x2b)
         {
-          myMem->setMemValue(reg_arr[i_fields.rs] + i_fields.imm, reg_arr[i_fields.rt], WORD_SIZE);
+          myMem->setMemValue(reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm), reg_arr[i_fields.rt], WORD_SIZE);
           cout << "sw" << endl;
         }
+        // beq
+        if (op_code == 0x4)
+        {
+          if (reg_arr[i_fields.rs] == reg_arr[i_fields.rt])
+          { pc += (sign_extend_imm(i_fields.imm) << 2);
+          cout << "beq" << endl;
+          }
+        }
+        // bne
+        if (op_code == 0x5)
+        {
+          if (reg_arr[i_fields.rs] != reg_arr[i_fields.rt])
+          { pc += (sign_extend_imm(i_fields.imm) << 2);
+          cout << "beq" << endl;
+          }
+        }
+
         break;
 	    }
 
       case J_TYPE:
       {
 	      J_format j_fields = get_J_format(instruction);
+
+        // j
+        if (op_code == 0x2)
+        {
+          pc = ((pc >> 28) << 28) | (j_fields.addr << 2);
+          cout << "j" << endl;
+        }
+        // jal
+        if (op_code == 0x3)
+        {
+          reg_arr[31] = pc + 4; // pc already incremented by 4 earlier, so total += 8
+          pc = ((pc >> 28) << 28) | (j_fields.addr << 2); // pc = jumpadr
+          cout << "jal" << endl;
+        }
+
         break;
 	    }
 
