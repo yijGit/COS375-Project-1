@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
           reg_arr[r_fields.rd] = (reg_arr[r_fields.rs] < reg_arr[r_fields.rt]) ? 1 : 0;
           cout << "sltu" << endl;
         }
-
+        
         // jr
         if (r_fields.funct == 0x8)
         {
