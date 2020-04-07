@@ -133,14 +133,14 @@ int main(int argc, char *argv[])
   fseek(pFile, 0, SEEK_END);
   lSize = ftell(pFile);
   rewind(pFile);
-  cout << lSize << "\n";
+  //cout << lSize << "\n";
   //fread(word, 4, 1, pFile);
   for (long i = 0; i < lSize; i+= 4)
   {
     fread(reinterpret_cast<char *>(&word), sizeof(word), 1, pFile);
     word = ConvertWordToBigEndian(word);
     myMem->setMemValue((uint32_t) i, word, WORD_SIZE);
-    cout << hex << setfill('0') << setw(8) << word << endl;
+    //cout << hex << setfill('0') << setw(8) << word << endl;
   }
 
   // Point	the	program	counter	to	the	first	instruction
