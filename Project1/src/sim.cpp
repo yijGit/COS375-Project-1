@@ -174,7 +174,6 @@ int main(int argc, char *argv[])
         transfer_registers(reg_arr, reg);
 	      dumpRegisterState(reg);
         dumpMemoryState(myMem);
-        cout << "HALT" << endl;
         return 0;
 	    }
 
@@ -187,83 +186,74 @@ int main(int argc, char *argv[])
         if (r_fields.funct == 0x0)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rt] << r_fields.shamt;
-          cout << "sll" << endl;
 
         }
         // srl
         if (r_fields.funct == 0x02)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rt] >> r_fields.shamt;
-          cout << "srl" << endl;
         }
         // add
         if (r_fields.funct == 0x20)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] + reg_arr[r_fields.rt];
-          cout << "add" << endl;
         }
         // addu
         if (r_fields.funct == 0x21)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] + reg_arr[r_fields.rt];
-          cout << "addu" << endl;
         }
         // sub
         if (r_fields.funct == 0x22)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] - reg_arr[r_fields.rt];
-          cout << "sub" << endl;
         }
         // subu
         if (r_fields.funct == 0x23)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] - reg_arr[r_fields.rt];
-          cout << "subu" << endl;
         }
         // and
         if (r_fields.funct == 0x24)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] & reg_arr[r_fields.rt];
-          cout << "and" << endl;
         }
         // or
         if (r_fields.funct == 0x25)
         {
           reg_arr[r_fields.rd] = reg_arr[r_fields.rs] | reg_arr[r_fields.rt];
-          cout << "or" << endl;
         }
         // nor
         if (r_fields.funct == 0x27)
         {
           reg_arr[r_fields.rd] = ~(reg_arr[r_fields.rs] | reg_arr[r_fields.rt]);
-          cout << "nor" << endl;
         }
         // jr
         if (r_fields.funct == 0x08)
         {
           pc = reg_arr[r_fields.rs];
-          cout << "jr" << endl;
         }
         // slt
-        // NOTE: I am not sure I'm supposed to use sign_extend_imm here.
-        // $s and $t need to be signed, so that is why I put them through sign_extend_imm
+        // NOTE: Originally I put $s and $t thru sign_extend_imm()
+        // But the green card didn't say to have SignExtendImm so ultimately I got rid of it
         if (r_fields.funct == 0x2a)
         {
-          reg_arr[r_fields.rd] = (sign_extend_imm(reg_arr[r_fields.rs]) < sign_extend_imm(reg_arr[r_fields.rt])) ? 1 : 0;
-          cout << "slt" << endl;
+          int32_t temp = reg_arr[r_fields.rt];
+          int32_t temp2 = reg_arr[r_fields.rs]; 
+          reg_arr[r_fields.rd] = temp2 < temp ? 1 : 0;
         }
         // sltu
         if (r_fields.funct == 0x2b)
         {
-          reg_arr[r_fields.rd] = (reg_arr[r_fields.rs] < reg_arr[r_fields.rt]) ? 1 : 0;
-          cout << "sltu" << endl;
+          uint32_t temp = reg_arr[r_fields.rt];
+          uint32_t temp2 = reg_arr[r_fields.rs]; 
+          reg_arr[r_fields.rd] = temp2 < temp ? 1 : 0;
         }
-        
+
         // jr
         if (r_fields.funct == 0x8)
         {
           pc = reg_arr[r_fields.rs];
-          cout << "jr" << endl;
         }
 
         break;
@@ -276,88 +266,77 @@ int main(int argc, char *argv[])
         if (op_code == 0x8)
         {
           reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm);
-          cout << "addi" << endl;
         }
         // addiu
         if (op_code == 0x9)
         {
           reg_arr[i_fields.rt] = reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm);
-          cout << "addiu" << endl;
         }
         // andi
         if (op_code == 0xc)
         {
           reg_arr[i_fields.rt] = reg_arr[i_fields.rs] & i_fields.imm;
-          cout << "andi" << endl;
         }
         // ori
         if (op_code == 0xd)
         {
           reg_arr[i_fields.rt] = reg_arr[i_fields.rs] | i_fields.imm;
-          cout << "ori" << endl;
         }
         // lbu
-        // NOTE: Don't know if specifying MemEntrySize does anything or if I still need to do bitwise AND 0xff/0xffff to isolate a byte/halfword
-        // For now I assumed BYTE_SIZE and HALF_SIZE doesn't do anything and used bitwise AND (&)
+        // NOTE: I'm assuming BYTE_SIZE will only retrieve the first 8 bits from MEM($s + offset)
         if (op_code == 0x24)
         {
-          myMem->getMemValue(0xff & (reg_arr[i_fields.rs] + i_fields.imm), reg_arr[i_fields.rt], BYTE_SIZE);
-          cout << "lbu" << endl;
+          myMem->getMemValue((reg_arr[i_fields.rs] + i_fields.imm), reg_arr[i_fields.rt], BYTE_SIZE);
         }
         // lhu
         if (op_code == 0x25)
         {
-          myMem->getMemValue(0xffff & (reg_arr[i_fields.rs] + i_fields.imm), reg_arr[i_fields.rt], HALF_SIZE);
-          cout << "lhu" << endl;
+          myMem->getMemValue((reg_arr[i_fields.rs] + i_fields.imm), reg_arr[i_fields.rt], HALF_SIZE);
         }
         // lui
         if (op_code == 0xf)
         {
           reg_arr[i_fields.rt] = i_fields.imm << 16;
-          cout << "lui" << endl;
         }
         // lw
         if (op_code == 0x23)
         {
           myMem->getMemValue(reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm), reg_arr[i_fields.rt], WORD_SIZE);
-          cout << "lw" << endl;
         }
         // slti
         if (op_code == 0xa)
         {
-          reg_arr[i_fields.rt] = (reg_arr[i_fields.rs] < sign_extend_imm(i_fields.imm)) ? 1 : 0;
-          cout << "slti" << endl;
+          int32_t temp = sign_extend_imm(i_fields.imm);
+          int32_t temp2 = reg_arr[i_fields.rs];
+          reg_arr[i_fields.rt] = temp2 < temp ? 1 : 0;
         }
         // sltiu
         if (op_code == 0xb)
         {
-          reg_arr[i_fields.rt] = (reg_arr[i_fields.rs] < i_fields.imm) ? 1 : 0;
-          cout << "sltiu" << endl;
+          uint32_t temp = sign_extend_imm(i_fields.imm);
+          uint32_t temp2 = reg_arr[i_fields.rs];
+          reg_arr[i_fields.rt] = temp2 < temp ? 1 : 0;
         }
         // sb
         if (op_code == 0x28)
         {
-          myMem->setMemValue(reg_arr[i_fields.rs] + i_fields.imm, 0xff & reg_arr[i_fields.rt], BYTE_SIZE);
-          cout << "sb" << endl;
+          myMem->setMemValue(reg_arr[i_fields.rs] + i_fields.imm, reg_arr[i_fields.rt], BYTE_SIZE);
         }
         // sh
         if (op_code == 0x29)
         {
-          myMem->setMemValue(reg_arr[i_fields.rs] + i_fields.imm, 0xffff & reg_arr[i_fields.rt], HALF_SIZE);
-          cout << "sh" << endl;
+          myMem->setMemValue(reg_arr[i_fields.rs] + i_fields.imm, reg_arr[i_fields.rt], HALF_SIZE);
         }
         // sw
         if (op_code == 0x2b)
         {
           myMem->setMemValue(reg_arr[i_fields.rs] + sign_extend_imm(i_fields.imm), reg_arr[i_fields.rt], WORD_SIZE);
-          cout << "sw" << endl;
         }
         // beq
         if (op_code == 0x4)
         {
           if (reg_arr[i_fields.rs] == reg_arr[i_fields.rt])
           { pc += (sign_extend_imm(i_fields.imm) << 2);
-          cout << "beq" << endl;
           }
         }
         // bne
@@ -365,7 +344,6 @@ int main(int argc, char *argv[])
         {
           if (reg_arr[i_fields.rs] != reg_arr[i_fields.rt])
           { pc += (sign_extend_imm(i_fields.imm) << 2);
-          cout << "bne" << endl;
           }
         }
         // blez
@@ -373,7 +351,6 @@ int main(int argc, char *argv[])
         {
           if (reg_arr[i_fields.rs] <= 0)
           { pc += (sign_extend_imm(i_fields.imm) << 2);
-          cout << "blez" << endl;
           }
         }
         // bgtz
@@ -381,7 +358,6 @@ int main(int argc, char *argv[])
         {
           if (reg_arr[i_fields.rs] > 0)
           { pc += (sign_extend_imm(i_fields.imm) << 2);
-          cout << "bgtz" << endl;
           }
         }
 
@@ -396,14 +372,12 @@ int main(int argc, char *argv[])
         if (op_code == 0x2)
         {
           pc = ((pc >> 28) << 28) | (j_fields.addr << 2);
-          cout << "j" << endl;
         }
         // jal
         if (op_code == 0x3)
         {
           reg_arr[31] = pc + 4; // pc already incremented by 4 earlier, so total += 8
           pc = ((pc >> 28) << 28) | (j_fields.addr << 2); // pc = jumpadr
-          cout << "jal" << endl;
         }
 
         break;
