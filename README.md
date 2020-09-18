@@ -1,4 +1,4 @@
-# COS375-Project-1
+# MIPS ISA Simulation
 
 A high-level simulations for MIPS ISA built for Princeton's COS375: Computer Architecture and Organization. It reads a binary machine code file, interprets the bits in that file as instructions for the MIPS instruction set, and simulates the execution of those instructions. The project was written in C++. 
 
